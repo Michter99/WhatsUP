@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="367.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.whatsup.ChooseChatController">
+   <Label layoutX="34.0" layoutY="116.0" text="Selecciona un contacto">
+      <font>
+         <Font name="Century Gothic" size="18.0"/>
+      </font>
+   </Label>
+   <Label layoutX="62.0" layoutY="29.0" text="WhatsUp" textFill="#aa4646">
+      <font>
+         <Font name="Century Gothic" size="36.0"/>
+      </font>
+   </Label>
+   <Button fx:id="clientXButton" contentDisplay="CENTER" layoutX="53.0" layoutY="168.0" mnemonicParsing="false"
+           onAction="#clientXAction" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #aa4646;"
+           text="ClienteX" textAlignment="CENTER" textFill="WHITE">
+      <font>
+         <Font name="Century Gothic" size="18.0"/>
+      </font>
+   </Button>
+   <Button fx:id="clientYButton" contentDisplay="CENTER" layoutX="53.0" layoutY="226.0" mnemonicParsing="false"
+           onAction="#clientYAction" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #aa4646;"
+           text="ClienteY" textAlignment="CENTER" textFill="WHITE">
+      <font>
+         <Font name="Century Gothic" size="18.0"/>
+      </font>
+   </Button>
+   <Button fx:id="logOutButton" contentDisplay="CENTER" layoutX="100.0" layoutY="306.0" mnemonicParsing="false"
+           onAction="#logoutButton" prefHeight="23.0" prefWidth="80.0" text="Salir" textAlignment="CENTER"
+           textFill="#aa4646">
+      <font>
+         <Font name="Century Gothic" size="16.0"/>
+      </font>
+   </Button>
+</AnchorPane>

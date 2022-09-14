@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="385.0" prefWidth="308.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.DecoderController">
+    <TextArea fx:id="inputText" editable="false" layoutX="28.0" layoutY="26.0" prefHeight="167.0" prefWidth="251.0" promptText="Introduce el texto cifrado...">
+        <font>
+          <Font name="Century Gothic" size="12.0" />
+        </font>
+    </TextArea>
+    <TextField fx:id="keyValue" layoutX="28.0" layoutY="213.0" prefHeight="25.0" prefWidth="131.0" promptText="Llave">
+        <font>
+          <Font name="Century Gothic" size="12.0" />
+        </font>
+    </TextField>
+    <Button layoutX="177.0" layoutY="213.0" mnemonicParsing="false" onAction="#decodeAction" prefHeight="25.0" prefWidth="102.0" style="-fx-background-color: #aa4646;" text="Descifrar" textFill="WHITE">
+        <font>
+          <Font name="Century Gothic" size="12.0" />
+        </font>
+    </Button>
+    <TextArea fx:id="outputText" editable="false" layoutX="28.0" layoutY="258.0" prefHeight="100.0" prefWidth="251.0" promptText="Resultado">
+        <font>
+          <Font name="Century Gothic" size="12.0" />
+        </font>
+    </TextArea>
+</AnchorPane>
