@@ -16,6 +16,10 @@ public class BusinessLogic {
     public String choosenContact = "";
     public String cypherType = "";
     public String detectedEncryptedText = "";
+    public String detectedFD = "";
+    public String detectedClaveAleatoriaCifrada = "";
+    public String detectedFDCif = "";
+    public String detectedEncryptedMessageSD = "";
 
 
     private BusinessLogic() {

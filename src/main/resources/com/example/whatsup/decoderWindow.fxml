@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="385.0" prefWidth="308.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.DecoderController">
-    <TextArea fx:id="inputText" editable="false" layoutX="28.0" layoutY="26.0" prefHeight="167.0" prefWidth="251.0" promptText="Introduce el texto cifrado...">
+<AnchorPane prefHeight="420.0" prefWidth="308.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.DecoderController">
+    <TextArea fx:id="inputText" editable="false" layoutX="28.0" layoutY="26.0" prefHeight="167.0" prefWidth="251.0" promptText="Texto cifrado... (Omitir en S.D.)">
         <font>
           <Font name="Century Gothic" size="12.0" />
         </font>
@@ -22,9 +22,14 @@
           <Font name="Century Gothic" size="12.0" />
         </font>
     </Button>
-    <TextArea fx:id="outputText" editable="false" layoutX="28.0" layoutY="258.0" prefHeight="100.0" prefWidth="251.0" promptText="Resultado">
+    <TextArea fx:id="outputText" editable="false" layoutX="28.0" layoutY="288.0" prefHeight="100.0" prefWidth="251.0" promptText="Resultado">
         <font>
           <Font name="Century Gothic" size="12.0" />
         </font>
     </TextArea>
+   <TextField fx:id="privateKeyValue" layoutX="28.0" layoutY="250.0" prefHeight="25.0" prefWidth="131.0" promptText="Tu llave privada">
+      <font>
+         <Font name="Century Gothic" size="12.0" />
+      </font>
+   </TextField>
 </AnchorPane>
