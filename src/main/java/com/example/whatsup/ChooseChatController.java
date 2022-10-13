@@ -47,7 +47,7 @@ public class ChooseChatController implements Initializable {
         data.choosenContact = clientXButton.getText();
         FXMLLoader fxmlLoader = new FXMLLoader(MainClientApp.class.getResource("chatWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("WhatsUp");
+        stage.setTitle("WhatsUp de " + data.activeUser);
         stage.setScene(scene);
         stage.show();
     }
@@ -57,7 +57,7 @@ public class ChooseChatController implements Initializable {
         data.choosenContact = clientYButton.getText();
         FXMLLoader fxmlLoader = new FXMLLoader(MainClientApp.class.getResource("chatWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("WhatsUp");
+        stage.setTitle("WhatsUp de " + data.activeUser);
         stage.setScene(scene);
         stage.show();
     }

@@ -13,6 +13,8 @@ public class BusinessLogic {
 
     public HashMap<String, Integer> userPorts = new HashMap<>();
     public String activeUser = "";
+    public int activeUserCert = 0;
+    public int activeUserPriv = 0;
     public String choosenContact = "";
     public String cypherType = "";
     public String detectedEncryptedText = "";

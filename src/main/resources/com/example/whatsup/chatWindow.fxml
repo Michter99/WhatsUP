@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="637.0" prefWidth="444.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.ClientController">
+<AnchorPane prefHeight="612.0" prefWidth="444.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.ClientController">
     <TextField fx:id="tfMessage" layoutX="48.0" layoutY="395.0" prefHeight="36.0" prefWidth="347.0" promptText="Escribe tu mensaje...">
       <font>
          <Font name="Century Gothic" size="12.0" />
@@ -58,27 +58,12 @@
          <Font name="Century Gothic" size="14.0" />
       </font>
    </TextArea>
-   <Button layoutX="52.0" layoutY="502.0" mnemonicParsing="false" onAction="#ssButton" prefHeight="27.0" prefWidth="98.0" style="-fx-background-color: #aa4646;" text="F.D." textFill="WHITE">
+   <Button layoutX="52.0" layoutY="502.0" mnemonicParsing="false" onAction="#sendFDMessage" prefHeight="27.0" prefWidth="98.0" style="-fx-background-color: #aa4646;" text="F.D." textFill="WHITE">
       <font>
          <Font name="Century Gothic" size="14.0" />
       </font>
    </Button>
-   <Button layoutX="172.0" layoutY="502.0" mnemonicParsing="false" onAction="#ssButton" prefHeight="27.0" prefWidth="98.0" style="-fx-background-color: #aa4646;" text="S.D." textFill="WHITE">
-      <font>
-         <Font name="Century Gothic" size="14.0" />
-      </font>
-   </Button>
-   <Button fx:id="confirmKeyFD" layoutX="173.0" layoutY="546.0" mnemonicParsing="false" onAction="#sendFDMessage" prefHeight="27.0" prefWidth="98.0" text="Confirmar" textFill="#aa4646">
-      <font>
-         <Font name="Century Gothic" size="14.0" />
-      </font>
-   </Button>
-   <TextField fx:id="publicKeyValue" layoutX="52.0" layoutY="588.0" prefHeight="24.0" prefWidth="178.0" promptText="Llave pública destinatario">
-      <font>
-         <Font name="Century Gothic" size="13.0" />
-      </font>
-   </TextField>
-   <Button fx:id="confirmKeySD" layoutX="282.0" layoutY="586.0" mnemonicParsing="false" onAction="#sendSDMessage" prefHeight="27.0" prefWidth="112.0" text="Confirmar SD" textAlignment="CENTER" textFill="#aa4646">
+   <Button layoutX="172.0" layoutY="502.0" mnemonicParsing="false" onAction="#sendSDMessage" prefHeight="27.0" prefWidth="98.0" style="-fx-background-color: #aa4646;" text="S.D." textFill="WHITE">
       <font>
          <Font name="Century Gothic" size="14.0" />
       </font>

@@ -5,11 +5,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.io.Serializable;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -32,11 +36,7 @@ public class ClientController implements Initializable {
     @FXML
     public TextArea textArea;
     @FXML
-    public Button confirmKeyFD;
-    @FXML
     public TextField publicKeyValue;
-    @FXML
-    public Button confirmKeySD;
     @FXML
     private Label contactLabel;
     @FXML
@@ -53,9 +53,6 @@ public class ClientController implements Initializable {
 
             keyValue.setVisible(false);
             confirmKey.setVisible(false);
-            confirmKeyFD.setVisible(false);
-            confirmKeySD.setVisible(false);
-            publicKeyValue.setVisible(false);
 
             if (data.activeUser.equals("Miguel") && data.choosenContact.equals("Pilar") || data.activeUser.equals("Pilar") && data.choosenContact.equals("Miguel")) {
                 textArea.setText(data.readChatFile(1));
@@ -89,7 +86,7 @@ public class ClientController implements Initializable {
         Stage stage = (Stage) regresarButton.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(MainClientApp.class.getResource("chooseChat.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("WhatsUp");
+        stage.setTitle("WhatsUp de " + data.activeUser);
         stage.setScene(scene);
         stage.show();
     }
@@ -99,14 +96,7 @@ public class ClientController implements Initializable {
         publicKeyValue.setText("");
         keyValue.setVisible(true);
         data.cypherType = ((Button)event.getSource()).getText();
-        if ("F.D.".equals(data.cypherType)) {
-            confirmKeyFD.setVisible(true);
-        } else if ("S.D.".equals(data.cypherType)) {
-            confirmKeySD.setVisible(true);
-            publicKeyValue.setVisible(true);
-        } else {
-            confirmKey.setVisible(true);
-        }
+        confirmKey.setVisible(true);
     }
 
     public void openDecoder() {
@@ -169,7 +159,8 @@ public class ClientController implements Initializable {
     }
 
     public void sendFDMessage() { // Firma digital
-        int privateKey = Integer.parseInt(keyValue.getText().trim());
+        data.cypherType = "F.D.";
+        int privateKey = data.activeUserPriv;
         String message = tfMessage.getText().toLowerCase().trim();
         int preResumen = 0;
         StringBuilder firmaDigital = new StringBuilder();
@@ -194,12 +185,12 @@ public class ClientController implements Initializable {
 
         tfMessage.clear();
         keyValue.setVisible(false);
-        confirmKeyFD.setVisible(false);
         client.sendMessage("[" + data.cypherType + "]\n" + firmaDigital + "\n" + message, textArea);
     }
 
-    public void sendSDMessage() { // Sobre digital
-        int privateKey = Integer.parseInt(keyValue.getText().trim());
+    public void sendSDMessage() throws IOException { // Sobre digital
+        data.cypherType = "S.D.";
+        int privateKey = data.activeUserPriv;
         String message = tfMessage.getText().toLowerCase().trim();
         int preResumen = 0;
         StringBuilder firmaDigital = new StringBuilder();
@@ -224,8 +215,6 @@ public class ClientController implements Initializable {
 
         tfMessage.clear();
         keyValue.setVisible(false);
-        publicKeyValue.setVisible(false);
-        confirmKeyFD.setVisible(false);
 
         Random random = new Random();
         int claveSimAlet = random.nextInt(37) + 1; // De 1 a 37
@@ -257,7 +246,28 @@ public class ClientController implements Initializable {
 
         // Cifrar claveSimAlet
         String claveSimAletStr = String.valueOf(claveSimAlet);
-        int publicKeyDest = Integer.parseInt(publicKeyValue.getText());
+
+        //**** Abrir certificado dest ****//
+        FileDialog fd = new FileDialog(new JFrame());
+        fd.setVisible(true);
+        File[] f = fd.getFiles();
+        int publicKeyDest = 0;
+        if (f.length > 0) {
+            File file = new File(fd.getFiles()[0].getAbsolutePath());
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);   // creates a buffering character input stream
+            String line;
+            int lineCounter = 0;
+            while ((line = br.readLine()) != null) {
+                if (lineCounter == 2) {
+                    publicKeyDest = Integer.parseInt(line);
+                }
+                lineCounter++;
+            }
+            fr.close(); // closes the stream and release the resources
+        }
+        //********************************//
+
         StringBuilder claveAletCif = new StringBuilder();
         for (int i = 0; i < claveSimAletStr.length(); i++)
         {
@@ -268,7 +278,6 @@ public class ClientController implements Initializable {
             claveAletCif.append(encryptChar);
         }
 
-        confirmKeySD.setVisible(false);
         String sobreDigital = "[" + data.cypherType + "]\n" + claveAletCif + "\n" + firmaDigitalCif + "|" + mensajeCif;
         client.sendMessage(sobreDigital, textArea);
     }

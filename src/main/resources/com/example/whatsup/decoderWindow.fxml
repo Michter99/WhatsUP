@@ -17,19 +17,14 @@
           <Font name="Century Gothic" size="12.0" />
         </font>
     </TextField>
-    <Button layoutX="177.0" layoutY="213.0" mnemonicParsing="false" onAction="#decodeAction" prefHeight="25.0" prefWidth="102.0" style="-fx-background-color: #aa4646;" text="Descifrar" textFill="WHITE">
+    <Button fx:id="descBtn" layoutX="177.0" layoutY="213.0" mnemonicParsing="false" onAction="#decodeAction" prefHeight="25.0" prefWidth="102.0" style="-fx-background-color: #aa4646;" text="Descifrar" textFill="WHITE">
         <font>
           <Font name="Century Gothic" size="12.0" />
         </font>
     </Button>
-    <TextArea fx:id="outputText" editable="false" layoutX="28.0" layoutY="288.0" prefHeight="100.0" prefWidth="251.0" promptText="Resultado">
+    <TextArea fx:id="outputText" editable="false" layoutX="28.0" layoutY="258.0" prefHeight="130.0" prefWidth="251.0" promptText="Resultado">
         <font>
           <Font name="Century Gothic" size="12.0" />
         </font>
     </TextArea>
-   <TextField fx:id="privateKeyValue" layoutX="28.0" layoutY="250.0" prefHeight="25.0" prefWidth="131.0" promptText="Tu llave privada">
-      <font>
-         <Font name="Century Gothic" size="12.0" />
-      </font>
-   </TextField>
 </AnchorPane>

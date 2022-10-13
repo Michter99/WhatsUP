@@ -2,23 +2,24 @@ package com.example.whatsup;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class DecoderController implements Initializable {
 
     @FXML
-    public TextField privateKeyValue;
-
+    public Button descBtn;
     @FXML
     private TextArea inputText;
-
     @FXML
     private TextField keyValue;
-
     @FXML
     private TextArea outputText;
 
@@ -27,13 +28,17 @@ public class DecoderController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         inputText.setText(data.detectedEncryptedText);
-        if (!data.cypherType.equals("[S.D.]")) {
+        if (!data.cypherType.equals("[C.A.]") && !data.cypherType.equals("[C.S.]")) {
             inputText.setText("");
-            privateKeyValue.setVisible(false);
+            keyValue.setVisible(false);
+            descBtn.setText("Certificado del emisor");
+            descBtn.setLayoutX(100);
+            descBtn.setPrefWidth(170);
+            inputText.setVisible(false);
         }
     }
 
-    public void decodeAction() {
+    public void decodeAction() throws IOException {
         String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789 ";
         String input = inputText.getText().toLowerCase().trim();
         StringBuilder output = new StringBuilder();
@@ -70,9 +75,30 @@ public class DecoderController implements Initializable {
             result = output.toString();
         } else if (data.cypherType.equals("[F.D.]")) {
             int preResumen = 0;
-            //String firmaDigital = data.detectedFD.trim();
+            input = data.detectedEncryptedText;
             String firmaDigital = data.detectedFD;
             StringBuilder decryptedSignature = new StringBuilder();
+
+            //**** Abrir certificado emisor ****//
+            FileDialog fd = new FileDialog(new JFrame());
+            fd.setVisible(true);
+            File[] f = fd.getFiles();
+            key = 0;
+            if (f.length > 0) {
+                File file = new File(fd.getFiles()[0].getAbsolutePath());
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);   // creates a buffering character input stream
+                String line;
+                int lineCounter = 0;
+                while ((line = br.readLine()) != null) {
+                    if (lineCounter == 2) {
+                        key = Integer.parseInt(line);
+                    }
+                    lineCounter++;
+                }
+                fr.close(); // closes the stream and release the resources
+            }
+            //********************************//
 
             // Función hash
             for (int i = 0; i < input.length(); i++) {
@@ -97,7 +123,7 @@ public class DecoderController implements Initializable {
         } else if (data.cypherType.equals("[S.D.]")) {
             //**** Descifrar clave simétrica aleatoria ****//
             String claveAleatoriaCifrada = data.detectedClaveAleatoriaCifrada;
-            int llavePrivadaDestinatario = Integer.parseInt(privateKeyValue.getText());
+            int llavePrivadaDestinatario = data.activeUserPriv;
 
             StringBuilder llaveSimetricaAleatoriaPre = new StringBuilder();
 
@@ -148,6 +174,28 @@ public class DecoderController implements Initializable {
 
                 firmaDigitalPre.append(decryptChar);
             }
+
+
+            //**** Abrir certificado emisor ****//
+            FileDialog fd = new FileDialog(new JFrame());
+            fd.setVisible(true);
+            File[] f = fd.getFiles();
+            key = 0;
+            if (f.length > 0) {
+                File file = new File(fd.getFiles()[0].getAbsolutePath());
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);   // creates a buffering character input stream
+                String line;
+                int lineCounter = 0;
+                while ((line = br.readLine()) != null) {
+                    if (lineCounter == 2) {
+                        key = Integer.parseInt(line);
+                    }
+                    lineCounter++;
+                }
+                fr.close(); // closes the stream and release the resources
+            }
+            //********************************//
 
 
             //**** Validar firma digital ****//
