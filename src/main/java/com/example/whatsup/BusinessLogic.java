@@ -17,6 +17,7 @@ public class BusinessLogic {
     public int activeUserPriv = 0;
     public String choosenContact = "";
     public String cypherType = "";
+    public String detectedCertificate = "";
     public String detectedEncryptedText = "";
     public String detectedFD = "";
     public String detectedClaveAleatoriaCifrada = "";

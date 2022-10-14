@@ -36,8 +36,6 @@ public class ClientController implements Initializable {
     @FXML
     public TextArea textArea;
     @FXML
-    public TextField publicKeyValue;
-    @FXML
     private Label contactLabel;
     @FXML
     private TextField tfMessage;
@@ -93,7 +91,6 @@ public class ClientController implements Initializable {
 
     public void ssButton(ActionEvent event) {
         keyValue.setText("");
-        publicKeyValue.setText("");
         keyValue.setVisible(true);
         data.cypherType = ((Button)event.getSource()).getText();
         confirmKey.setVisible(true);
@@ -101,31 +98,19 @@ public class ClientController implements Initializable {
 
     public void openDecoder() {
         try {
-            data.cypherType = textArea.getSelectedText().substring(0, 6).trim();
+            String[] selectedText = textArea.getSelectedText().split("\n");
+            data.cypherType = selectedText[0];
             if (data.cypherType.equals("[F.D.]")) {
-                String secondPart = textArea.getSelectedText().substring(7).trim();
-                int getLineBreakPosition = 0;
-                while (secondPart.charAt(getLineBreakPosition) != 10) { // Detectar salto de línea de la firma
-                    getLineBreakPosition++;
-                }
-                data.detectedFD = secondPart.substring(0, getLineBreakPosition).trim();
-                data.detectedEncryptedText = textArea.getSelectedText().substring(8 + getLineBreakPosition).trim();
+                data.detectedCertificate = selectedText[1];
+                data.detectedFD = selectedText[2];
+                data.detectedEncryptedText = selectedText[3];
             } else if (data.cypherType.equals("[S.D.]")) {
-                String secondPart = textArea.getSelectedText().substring(7).trim();
-                int getLineBreakPosition = 0;
-                while (secondPart.charAt(getLineBreakPosition) != 10) { // Detectar salto de línea de la firma
-                    getLineBreakPosition++;
-                }
-                data.detectedClaveAleatoriaCifrada = secondPart.substring(0, getLineBreakPosition).trim();////
-                String thirdPart = secondPart.substring(getLineBreakPosition).trim();
-                int getPipePosition = 0;
-                while (thirdPart.charAt(getPipePosition) != 124) {
-                    getPipePosition++;
-                }
-                data.detectedFDCif = thirdPart.substring(0, getPipePosition);
-                data.detectedEncryptedMessageSD = thirdPart.substring(getPipePosition + 1);
+                data.detectedCertificate = selectedText[1];
+                data.detectedClaveAleatoriaCifrada = selectedText[2];
+                data.detectedFDCif = selectedText[3].split("\\|")[0];
+                data.detectedEncryptedMessageSD = selectedText[3].split("\\|")[1];
             } else {
-                data.detectedEncryptedText = textArea.getSelectedText().substring(7).trim();
+                data.detectedEncryptedText = selectedText[1];
             }
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("decoderWindow.fxml"));
@@ -185,7 +170,7 @@ public class ClientController implements Initializable {
 
         tfMessage.clear();
         keyValue.setVisible(false);
-        client.sendMessage("[" + data.cypherType + "]\n" + firmaDigital + "\n" + message, textArea);
+        client.sendMessage("[" + data.cypherType + "]\n" + data.activeUserCert + "\n" + firmaDigital + "\n" + message, textArea);
     }
 
     public void sendSDMessage() throws IOException { // Sobre digital
@@ -278,7 +263,7 @@ public class ClientController implements Initializable {
             claveAletCif.append(encryptChar);
         }
 
-        String sobreDigital = "[" + data.cypherType + "]\n" + claveAletCif + "\n" + firmaDigitalCif + "|" + mensajeCif;
+        String sobreDigital = "[" + data.cypherType + "]\n" + data.activeUserCert + "\n" + claveAletCif + "\n" + firmaDigitalCif + "|" + mensajeCif;
         client.sendMessage(sobreDigital, textArea);
     }
 }
