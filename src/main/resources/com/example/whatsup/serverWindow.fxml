@@ -5,15 +5,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="417.0" prefWidth="433.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.ServerController">
-   <TextArea fx:id="textAreaLog" editable="false" layoutX="40.0" layoutY="72.0" prefHeight="306.0" prefWidth="353.0">
+<AnchorPane prefHeight="308.0" prefWidth="253.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.ServerController">
+   <TextArea fx:id="textAreaLog" editable="false" layoutX="16.0" layoutY="56.0" prefHeight="236.0" prefWidth="221.0">
       <font>
          <Font name="Century Gothic" size="12.0" />
       </font>
    </TextArea>
-   <Label layoutX="90.0" layoutY="14.0" text="Servidor WhatsUp" textFill="#aa4646">
+   <Label layoutX="80.0" layoutY="16.0" text="Servidor" textFill="#aa4646">
       <font>
-         <Font name="Century Gothic" size="30.0" />
+         <Font name="Century Gothic" size="24.0" />
       </font>
    </Label>
 </AnchorPane>

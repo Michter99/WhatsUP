@@ -11,10 +11,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +47,6 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
             keyValue.setVisible(false);
             confirmKey.setVisible(false);
 
@@ -173,7 +171,7 @@ public class ClientController implements Initializable {
         client.sendMessage("[" + data.cypherType + "]\n" + data.activeUserCert + "\n" + firmaDigital + "\n" + message, textArea);
     }
 
-    public void sendSDMessage() throws IOException { // Sobre digital
+    public void sendSDMessage() throws IOException, ClassNotFoundException { // Sobre digital
         data.cypherType = "S.D.";
         int privateKey = data.activeUserPriv;
         String message = tfMessage.getText().toLowerCase().trim();
@@ -232,26 +230,32 @@ public class ClientController implements Initializable {
         // Cifrar claveSimAlet
         String claveSimAletStr = String.valueOf(claveSimAlet);
 
-        //**** Abrir certificado dest ****//
-        FileDialog fd = new FileDialog(new JFrame());
-        fd.setVisible(true);
-        File[] f = fd.getFiles();
-        int publicKeyDest = 0;
-        if (f.length > 0) {
-            File file = new File(fd.getFiles()[0].getAbsolutePath());
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);   // creates a buffering character input stream
-            String line;
-            int lineCounter = 0;
-            while ((line = br.readLine()) != null) {
-                if (lineCounter == 2) {
-                    publicKeyDest = Integer.parseInt(line);
-                }
-                lineCounter++;
-            }
-            fr.close(); // closes the stream and release the resources
-        }
-        //********************************//
+        String idCertificadoDestinatario = switch (data.choosenContact) {
+            case "Miguel" -> "189248";
+            case "Pilar" -> "291588";
+            case "Santiago" -> "324365";
+            default -> "0";
+        };
+
+        /* Solicitar llave publica del receptor al AR */
+        Socket socketAR = new Socket("localhost", 6000);
+        ObjectOutputStream outputStream = new ObjectOutputStream(socketAR.getOutputStream());
+        ARPackage paqueteSolicitud = new ARPackage();
+        paqueteSolicitud.idCertificado = idCertificadoDestinatario;
+        paqueteSolicitud.puertoOrigenCliente = 7000;
+        paqueteSolicitud.certificadoEncontrado = false;
+        outputStream.writeObject(paqueteSolicitud);
+        socketAR.close();
+
+        /* Esperar respuesta del AR **/
+        ServerSocket tempSSocket = new ServerSocket(7000);
+        socketAR = tempSSocket.accept();
+        ObjectInputStream objectInputStream = new ObjectInputStream(socketAR.getInputStream());
+        ARPackage paqueteRespuesta = (ARPackage) objectInputStream.readObject();
+        socketAR.close();
+        tempSSocket.close();
+
+        int publicKeyDest = paqueteRespuesta.llavePublica;
 
         StringBuilder claveAletCif = new StringBuilder();
         for (int i = 0; i < claveSimAletStr.length(); i++)

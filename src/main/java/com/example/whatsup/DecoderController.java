@@ -7,6 +7,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,11 +23,17 @@ public class DecoderController implements Initializable {
     @FXML
     private TextArea outputText;
 
+    ServerSocket decoderSocket;
     BusinessLogic data = BusinessLogic.getInstance();
     String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789 ";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            decoderSocket = new ServerSocket(7000);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         inputText.setText(data.detectedEncryptedText);
         if (!data.cypherType.equals("[C.A.]") && !data.cypherType.equals("[C.S.]")) {
             keyValue.setVisible(false);
@@ -35,39 +43,42 @@ public class DecoderController implements Initializable {
         if (data.cypherType.equals("[F.D.]")) {
             try {
                 verificarFirma();
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else if (data.cypherType.equals("[S.D.]")) {
             try {
                 verificarSobre();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public void verificarFirma() throws IOException {
+    public void verificarFirma() throws IOException, ClassNotFoundException {
         int preResumen = 0;
         String input = data.detectedEncryptedText;
         String firmaDigital = data.detectedFD;
         StringBuilder decryptedSignature = new StringBuilder();
-        int key = 0;
+        int key;
 
-        // Abrir archivo del certificado del emisor
-        File file = new File(".\\Certificados\\" + data.detectedCertificate + "_cer.txt");
-        FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);   // creates a buffering character input stream
-        String line;
-        int lineCounter = 0;
-        while ((line = br.readLine()) != null) {
-            if (lineCounter == 2) {
-                key = Integer.parseInt(line);
-            }
-            lineCounter++;
-        }
-        fr.close(); // closes the stream and release the resources
-        //********************************//
+        /* Enviar solicitud a AR */
+        Socket socketAR = new Socket("localhost", 6000);
+        ObjectOutputStream outputStream = new ObjectOutputStream(socketAR.getOutputStream());
+        ARPackage paqueteSolicitud = new ARPackage();
+        paqueteSolicitud.idCertificado = data.detectedCertificate;
+        paqueteSolicitud.puertoOrigenCliente = 7000;
+        paqueteSolicitud.certificadoEncontrado = false;
+        outputStream.writeObject(paqueteSolicitud);
+        socketAR.close();
+
+        /* Esperar respuesta de AR */
+        socketAR = decoderSocket.accept();
+        ObjectInputStream objectInputStream = new ObjectInputStream(socketAR.getInputStream());
+        ARPackage paqueteRespuesta = (ARPackage) objectInputStream.readObject();
+        socketAR.close();
+        decoderSocket.close();
+        key = paqueteRespuesta.llavePublica;
 
         // Función hash
         for (int i = 0; i < input.length(); i++) {
@@ -93,7 +104,7 @@ public class DecoderController implements Initializable {
         outputText.setText(result);
     }
 
-    public void verificarSobre() throws IOException {
+    public void verificarSobre() throws IOException, ClassNotFoundException {
         //**** Descifrar clave simétrica aleatoria ****//
         String claveAleatoriaCifrada = data.detectedClaveAleatoriaCifrada;
         int llavePrivadaDestinatario = data.activeUserPriv;
@@ -148,22 +159,23 @@ public class DecoderController implements Initializable {
             firmaDigitalPre.append(decryptChar);
         }
 
+        /* Enviar solicitud a AR */
+        Socket socketAR = new Socket("localhost", 6000);
+        ObjectOutputStream outputStream = new ObjectOutputStream(socketAR.getOutputStream());
+        ARPackage paqueteSolicitud = new ARPackage();
+        paqueteSolicitud.idCertificado = data.detectedCertificate;
+        paqueteSolicitud.puertoOrigenCliente = 7000;
+        paqueteSolicitud.certificadoEncontrado = false;
+        outputStream.writeObject(paqueteSolicitud);
+        socketAR.close();
 
-        //**** Abrir certificado emisor ****//
-        int key = 0;
-        File file = new File(".\\Certificados\\" + data.detectedCertificate + "_cer.txt");
-        FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);   // creates a buffering character input stream
-        String line;
-        int lineCounter = 0;
-        while ((line = br.readLine()) != null) {
-            if (lineCounter == 2) {
-                key = Integer.parseInt(line);
-            }
-            lineCounter++;
-        }
-        fr.close(); // closes the stream and release the resources
-
+        /* Esperar respuesta de AR */
+        socketAR = decoderSocket.accept();
+        ObjectInputStream objectInputStream = new ObjectInputStream(socketAR.getInputStream());
+        ARPackage paqueteRespuesta = (ARPackage) objectInputStream.readObject();
+        socketAR.close();
+        decoderSocket.close();
+        int key = paqueteRespuesta.llavePublica;
 
         //**** Validar firma digital ****//
         String mensajeOriginal = mensajeOriginalPre.toString();

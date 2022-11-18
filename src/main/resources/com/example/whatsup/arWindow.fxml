@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="337.0" prefWidth="388.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.whatsup.ArController">
+   <Label fx:id="labelAR" layoutX="155.0" layoutY="16.0" text="AR 6000">
+      <font>
+         <Font name="Century Gothic" size="20.0" />
+      </font>
+   </Label>
+   <TextArea fx:id="logTextArea" editable="false" layoutX="21.0" layoutY="56.0" prefHeight="230.0" prefWidth="346.0" wrapText="true">
+      <font>
+         <Font name="Century Gothic" size="12.0" />
+      </font>
+   </TextArea>
+   <Button layoutX="152.0" layoutY="295.0" mnemonicParsing="false" onAction="#clearLog" text="Clear Log">
+      <font>
+         <Font name="Century Gothic" size="14.0" />
+      </font>
+   </Button>
+</AnchorPane>
